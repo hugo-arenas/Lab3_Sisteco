@@ -7,12 +7,14 @@ i = 0
 while i < len(simbolos):
         simbolos_dato.append(simbolos[i])
         simbolos_valor.append(ord(simbolos[i]))
-        print(ord(simbolos[i]))
         i = i + 1
 simbolos_dato.append('"')
 simbolos_valor.append(ord('"'))
 
 sim_dato_valor = [simbolos_dato,simbolos_valor]
+sim_valor_ord = sorted(simbolos_valor)
+for val in sim_valor_ord:
+        print(val)
 valor_maximo = max(sim_dato_valor[1]) + 1
 
 def binario_a_valor(cadena_binaria):
@@ -73,7 +75,7 @@ def cifrado_feistel(texto_binario, llave, t_bloque):
     while i < t:
         j = 0
         aux_texto_binario = ""
-        while j < cantidad*2:
+        while j <= cantidad:
             texto_binario_l = nuevo_texto_binario[j*int(t_bloque/2):(j+1)*int(t_bloque/2)]
             texto_binario_r = nuevo_texto_binario[(j+1)*int(t_bloque/2):(j+2)*int(t_bloque/2)]
             print(texto_binario_l + " y " + texto_binario_r)
@@ -93,10 +95,12 @@ def texto_a_binario(texto):
 def binario_a_texto(texto_binario):
         texto = ""
         i = 0
-        while i*8 < len(texto_binario):
+        while i < int(len(texto_binario)/8):
                 valor = binario_a_valor(texto_binario[i*8:(i+1)*8])
-                if valor >= valor_maximo:
-                        valor = valor%valor_maximo
+                if valor > 252:
+                       valor = 32 + valor - 252
+                if valor < 32:
+                        valor = 252 - 32 + valor
                 confirmar = 0
                 simbolo = ""
                 j = 0
@@ -120,6 +124,6 @@ def binario_a_texto(texto_binario):
 
 texto = "hugo arenas aros"
 texto_binario = texto_a_binario(texto)
-texto_binario_encriptado = cifrado_feistel(texto_binario,"00000011",16)
+texto_binario_encriptado = cifrado_feistel(texto_binario,"01010001",16)
 texto_encriptado = binario_a_texto(texto_binario_encriptado)
-print(texto_encriptado)
+print(texto_encriptado + " largo:" +  str(len(texto_encriptado)))
