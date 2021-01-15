@@ -13,6 +13,7 @@ simbolos_dato.append('"')
 simbolos_valor.append(ord('"'))
 
 sim_dato_valor = [simbolos_dato,simbolos_valor]
+valor_maximo = max(sim_dato_valor[1]) + 1
 
 def binario_a_valor(cadena_binaria):
     digito = 0
@@ -58,7 +59,7 @@ def XOR(c_binario_1, c_binario_2):
     return nuevo_frag
 
 def sustitucion(c_binario_1, c_binario_2, llave):
-        return XOR(c_binario_1,XOR(_binario_2, llave))
+        return XOR(c_binario_1,XOR(c_binario_2, llave))
 
 def permutacion(c_binario_1, c_binario_2):
     nuevo_c_binario = c_binario_2 + c_binario_1
@@ -67,17 +68,58 @@ def permutacion(c_binario_1, c_binario_2):
 def cifrado_feistel(texto_binario, llave, t_bloque):
     i = 0
     t = len(texto_binario)
-    t_c_binario = int(t/t_bloque)
+    cantidad = int(t/t_bloque)
     nuevo_texto_binario = texto_binario[0:t]
     while i < t:
         j = 0
         aux_texto_binario = ""
-        while j < t_c_binario*2:
-            texto_binario_l = nuevo_texto_binario[j*int(t/(t_c_binario*2)):(j+1)*int(t/(t_c_binario*2))]
-            texto_binario_r = nuevo_texto_binario[(j+1)*int(t/(t_c_binario*2)):(j+2)*int(t/(t_c_binario*2))]
-            texto_binario_r_aux = sustitucion(texto_binario_r,texto_binario_l,llave)
+        while j < cantidad*2:
+            texto_binario_l = nuevo_texto_binario[j*int(t_bloque/2):(j+1)*int(t_bloque/2)]
+            texto_binario_r = nuevo_texto_binario[(j+1)*int(t_bloque/2):(j+2)*int(t_bloque/2)]
+            print(texto_binario_l + " y " + texto_binario_r)
+            texto_binario_r_aux = sustitucion(texto_binario_l,texto_binario_r,llave)
             aux_texto_binario = aux_texto_binario + permutacion(texto_binario_l, texto_binario_r_aux)
             j = j + 2
         nuevo_texto_binario = aux_texto_binario[0:t]
         i = i + 1
     return nuevo_texto_binario
+
+def texto_a_binario(texto):
+        texto_binario = ""
+        for simbolo in texto:
+                texto_binario = texto_binario + dato_a_binario(simbolo)
+        return texto_binario
+
+def binario_a_texto(texto_binario):
+        texto = ""
+        i = 0
+        while i*8 < len(texto_binario):
+                valor = binario_a_valor(texto_binario[i*8:(i+1)*8])
+                if valor >= valor_maximo:
+                        valor = valor%valor_maximo
+                confirmar = 0
+                simbolo = ""
+                j = 0
+                while j < len(sim_dato_valor[1]):
+                        if valor == sim_dato_valor[1][j]:
+                                confirmar = 1
+                                simbolo = sim_dato_valor[0][j]
+                                j = len(sim_dato_valor[1])
+                        j = j + 1
+                                
+                #for numero, dato in [sim_dato_valor[1],sim_dato_valor[0]]:
+                #        if valor == numero:
+                #                confirmar = 1
+                #                simbolo = dato
+                #                break
+                if confirmar == 0:
+                        simbolo = "#"
+                texto = texto + simbolo
+                i = i + 1
+        return texto
+
+texto = "hugo arenas aros"
+texto_binario = texto_a_binario(texto)
+texto_binario_encriptado = cifrado_feistel(texto_binario,"00000011",16)
+texto_encriptado = binario_a_texto(texto_binario_encriptado)
+print(texto_encriptado)
