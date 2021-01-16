@@ -1,6 +1,5 @@
 # -⁻- coding: UTF-8 -*-
-simbolos = "0123456789abcdefghijklmnñopqrstuvwxyABCDEFGHIJKLMNÑOPQRSTUVWXYZ#$%&/\{}[]()-_,.;:+-*'= °|¬áéíóúüÁÉÍÓÚÜ´âêîôûÂÊÎÔÛ^àèìòùÀÈÌÒÙ`¿?¡!"
-print(simbolos)
+simbolos = "0123456789abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ#$%&/\{}[]()-~_,.;:+-*'= °|¬áéíóúüÁÉÍÓÚÜ´âêîôûÂÊÎÔÛ^àèìòùÀÈÌÒÙ`¿?¡!<>@"
 simbolos_dato = []
 simbolos_valor = []
 i = 0
@@ -13,6 +12,8 @@ simbolos_valor.append(ord('"'))
 
 sim_dato_valor = [simbolos_dato,simbolos_valor]
 sim_valor_ord = sorted(simbolos_valor)
+for sim in sim_valor_ord:
+        print(sim)
 valor_maximo = max(sim_dato_valor[1]) + 1
 
 def binario_a_valor(cadena_binaria):
@@ -77,7 +78,27 @@ def cifrado_feistel(texto_binario, llave, t_bloque):
             texto_binario_l = nuevo_texto_binario[j*int(t_bloque/2):(j+1)*int(t_bloque/2)]
             texto_binario_r = nuevo_texto_binario[(j+1)*int(t_bloque/2):(j+2)*int(t_bloque/2)]
             texto_binario_r_aux = sustitucion(texto_binario_l,texto_binario_r,llave)
-            aux_texto_binario = aux_texto_binario + permutacion(texto_binario_l, texto_binario_r_aux)
+            texto_binario_l_aux = texto_binario_r[0:len(texto_binario_r)]
+            aux_texto_binario = aux_texto_binario + permutacion(texto_binario_r_aux, texto_binario_l_aux)
+            j = j + 2
+        nuevo_texto_binario = aux_texto_binario[0:t]
+        i = i + 1
+    return nuevo_texto_binario
+
+def decifrado_feistel(texto_binario, llave, t_bloque):
+    i = 0
+    t = len(texto_binario)
+    cantidad = int(t/t_bloque)
+    nuevo_texto_binario = texto_binario[0:t]
+    while i < t:
+        j = 0
+        aux_texto_binario = ""
+        while j <= cantidad*2:
+            texto_binario_l = nuevo_texto_binario[j*int(t_bloque/2):(j+1)*int(t_bloque/2)]
+            texto_binario_r = nuevo_texto_binario[(j+1)*int(t_bloque/2):(j+2)*int(t_bloque/2)]
+            texto_binario_l_aux = sustitucion(texto_binario_r,texto_binario_l,llave)
+            texto_binario_r_aux = texto_binario_l[0:len(texto_binario_l)]
+            aux_texto_binario = aux_texto_binario + permutacion(texto_binario_r_aux, texto_binario_l_aux)
             j = j + 2
         nuevo_texto_binario = aux_texto_binario[0:t]
         i = i + 1
@@ -88,7 +109,7 @@ def texto_a_binario(texto):
         for simbolo in texto:
                 texto_binario = texto_binario + dato_a_binario(simbolo)
         return texto_binario
-
+#127
 def binario_a_texto(texto_binario):
         texto = ""
         i = 0
@@ -108,6 +129,7 @@ def binario_a_texto(texto_binario):
                                 j = len(sim_dato_valor[1])
                         j = j + 1
                 if confirmar == 0:
+                        print("error")
                         simbolo = "#"
                 texto = texto + simbolo
                 i = i + 1
@@ -115,7 +137,7 @@ def binario_a_texto(texto_binario):
 
 texto = "Laboratio 3 - Sistemas de Comunicación"
 texto_binario = texto_a_binario(texto)
-print(texto_binario)
 texto_binario_encriptado = cifrado_feistel(texto_binario,"01010001",16)
 texto_encriptado = binario_a_texto(texto_binario_encriptado)
 print(texto_encriptado)
+print(binario_a_texto(cifrado_feistel(texto_binario_encriptado,"01010001",16)))
