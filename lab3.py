@@ -1,29 +1,24 @@
 # -⁻- coding: UTF-8 -*-
-simbolos = "0123456789abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ#$%&/\{}[]()-~_,.;:+-*'= °|¬áéíóúüÁÉÍÓÚÜ´âêîôûÂÊÎÔÛ^àèìòùÀÈÌÒÙ`¿?¡!<>@"
+simbolos = "0123456789abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ#$%&/\{}[]()-~_,.;:+*'= °|¬áéíóúüÁÉÍÓÚÜ´âêîôûÂÊÎÔÛ^àèìòùÀÈÌÒÙ`¿?¡!<>@"
 simbolos_dato = []
 simbolos_valor = []
 i = 0
-while i < len(simbolos):
-        simbolos_dato.append(simbolos[i])
-        simbolos_valor.append(ord(simbolos[i]))
-        i = i + 1
+for s in simbolos:
+        simbolos_dato.append(s)
+        simbolos_valor.append(ord(s))
+#while i < len(simbolos):
+#        simbolos_dato.append(simbolos[i])
+#        simbolos_valor.append(ord(simbolos[i]))
+#        i = i + 1
 simbolos_dato.append('"')
 simbolos_valor.append(ord('"'))
 
-sim_dato_valor = [simbolos_dato,simbolos_valor]
-sim_valor_ord = sorted(simbolos_valor)
-for sim in sim_valor_ord:
-        print(sim)
-valor_maximo = max(sim_dato_valor[1]) + 1
-
-def binario_a_valor(cadena_binaria):
-    digito = 0
-    i = 0
-    while i < len(cadena_binaria):
-        if cadena_binaria[len(cadena_binaria)-i-1]=="1":
-            digito = digito + pow(2,i)
-        i = i + 1
-    return digito
+def digito_a_binario(digito):
+        binario = bin(digito)
+        binario = binario[2:len(binario)]
+        while len(binario) < 8:
+                binario = "0" + binario
+        return binario
 
 def dato_a_binario(dato):
         binario = str(bin(ord(dato)))
@@ -36,108 +31,132 @@ def dato_a_binario(dato):
                         aux_binario = "0" + aux_binario
                         i = i + 1
                 return aux_binario
-                
-        
-def compuesto_binario(cadena_binaria):
-    nuevo_frag = ""
-    for binario in c_binario:
-        if binario == "1":
-            nuevo_frag = nuevo_frag + "0"
-        if binario == "0":
-            nuevo_frag = nuevo_frag + "1"
-    return nuevo_frag
-
-
-def XOR(c_binario_1, c_binario_2):
-    nuevo_frag = ""
-    i = 0
-    while i < len(c_binario_1):
-        if c_binario_1[len(c_binario_1)-i-1] != c_binario_2[len(c_binario_2)-i-1]:
-            nuevo_frag = "1" + nuevo_frag
-        else:
-            nuevo_frag = "0" + nuevo_frag
-        i = i + 1
-    return nuevo_frag
-
-def sustitucion(c_binario_1, c_binario_2, llave):
-        return XOR(c_binario_1,XOR(c_binario_2, llave))
-
-def permutacion(c_binario_1, c_binario_2):
-    nuevo_c_binario = c_binario_2 + c_binario_1
-    return nuevo_c_binario
-
-def cifrado_feistel(texto_binario, llave, t_bloque):
-    i = 0
-    t = len(texto_binario)
-    cantidad = int(t/t_bloque)
-    nuevo_texto_binario = texto_binario[0:t]
-    while i < t:
-        j = 0
-        aux_texto_binario = ""
-        while j <= cantidad*2:
-            texto_binario_l = nuevo_texto_binario[j*int(t_bloque/2):(j+1)*int(t_bloque/2)]
-            texto_binario_r = nuevo_texto_binario[(j+1)*int(t_bloque/2):(j+2)*int(t_bloque/2)]
-            texto_binario_r_aux = sustitucion(texto_binario_l,texto_binario_r,llave)
-            texto_binario_l_aux = texto_binario_r[0:len(texto_binario_r)]
-            aux_texto_binario = aux_texto_binario + permutacion(texto_binario_r_aux, texto_binario_l_aux)
-            j = j + 2
-        nuevo_texto_binario = aux_texto_binario[0:t]
-        i = i + 1
-    return nuevo_texto_binario
-
-def decifrado_feistel(texto_binario, llave, t_bloque):
-    i = 0
-    t = len(texto_binario)
-    cantidad = int(t/t_bloque)
-    nuevo_texto_binario = texto_binario[0:t]
-    while i < t:
-        j = 0
-        aux_texto_binario = ""
-        while j <= cantidad*2:
-            texto_binario_l = nuevo_texto_binario[j*int(t_bloque/2):(j+1)*int(t_bloque/2)]
-            texto_binario_r = nuevo_texto_binario[(j+1)*int(t_bloque/2):(j+2)*int(t_bloque/2)]
-            texto_binario_l_aux = sustitucion(texto_binario_r,texto_binario_l,llave)
-            texto_binario_r_aux = texto_binario_l[0:len(texto_binario_l)]
-            aux_texto_binario = aux_texto_binario + permutacion(texto_binario_r_aux, texto_binario_l_aux)
-            j = j + 2
-        nuevo_texto_binario = aux_texto_binario[0:t]
-        i = i + 1
-    return nuevo_texto_binario
-
+  
 def texto_a_binario(texto):
         texto_binario = ""
         for simbolo in texto:
                 texto_binario = texto_binario + dato_a_binario(simbolo)
         return texto_binario
-#127
-def binario_a_texto(texto_binario):
-        texto = ""
+
+def largo_texto_ideal(texto):
+        if len(texto)%2 != 0:
+                return texto + " "
+        else:
+                return texto
+def largo_bloque_ideal(largo_bloque, l_bloque, texto, direccion):
+        if len(texto) < largo_bloque:
+                return 0
+        elif largo_bloque%2 == 1:
+                return largo_bloque_ideal(largo_bloque + 1, l_bloque, texto, direccion)
+        elif largo_bloque == 0:
+                return 0
+        elif len(texto)%largo_bloque == 0:
+                return largo_bloque
+        else:
+                if direccion == 0:
+                        b1 = largo_bloque_ideal(largo_bloque - 2, l_bloque, texto, -1)
+                        b2 = largo_bloque_ideal(largo_bloque + 2, l_bloque, texto, 1)
+                        if b1 == 0 and b2 != 0:
+                                return b2
+                        elif b1 != 0 and b2 == 0:
+                                return b1
+                        elif b1 == b2 and b1 == 0:
+                                return 0
+                        elif (l_bloque - b1) < (b2 - l_bloque):
+                                return b1
+                        else:
+                                return b2
+                elif direccion > 0:
+                        return largo_bloque_ideal(largo_bloque + 2, l_bloque, texto, 1)
+                else:
+                        return largo_bloque_ideal(largo_bloque - 2, l_bloque, texto, -1)
+        
+def sustitucion(fragmento_texto, llave):
+        fragmento_nuevo = ""
+        for simbolo in fragmento_texto:
+                posicion = simbolos_valor.index(ord(simbolo))
+                posicion = (posicion + llave)%len(simbolos)
+                fragmento_nuevo = fragmento_nuevo + simbolos_dato[posicion]
+        return fragmento_nuevo
+
+def sustitucion_inv(fragmento_texto, llave):
+        fragmento_nuevo = ""
+        for simbolo in fragmento_texto:
+                posicion = simbolos_valor.index(ord(simbolo))
+                indice = 0
+                while (indice + llave)%len(simbolos) != posicion:
+                        indice = indice + 1
+                fragmento_nuevo = fragmento_nuevo + simbolos_dato[indice]
+        return  fragmento_nuevo
+
+def permutacion(fragmento_texto_1, fragmento_texto_2):
+        fragmento_nuevo = ""
         i = 0
-        while i < int(len(texto_binario)/8):
-                valor = binario_a_valor(texto_binario[i*8:(i+1)*8])
-                if valor > 252:
-                       valor = 32 + valor - 252
-                if valor < 32:
-                        valor = 252 - 32 + valor
-                confirmar = 0
-                simbolo = ""
-                j = 0
-                while j < len(sim_dato_valor[1]):
-                        if valor == sim_dato_valor[1][j]:
-                                confirmar = 1
-                                simbolo = sim_dato_valor[0][j]
-                                j = len(sim_dato_valor[1])
-                        j = j + 1
-                if confirmar == 0:
-                        print("error")
-                        simbolo = "#"
-                texto = texto + simbolo
+        while i < len(fragmento_texto_1):
+                fragmento_nuevo = fragmento_nuevo + fragmento_texto_1[i] + fragmento_texto_2[len(fragmento_texto_2)-1-i]
                 i = i + 1
-        return texto
+        return fragmento_nuevo
+
+def permutacion_inv(fragmento_texto_1, fragmento_texto_2):
+        fragmento_aux = fragmento_texto_1 + fragmento_texto_2
+        fragmento_1 = ""
+        fragmento_2 = ""
+        i = 0
+        while i < len(fragmento_aux):
+                fragmento_1 = fragmento_1 + fragmento_aux[i]
+                fragmento_2 = fragmento_2 + fragmento_aux[len(fragmento_aux)-1-i]
+                i = i + 2
+        return fragmento_1 + fragmento_2
+
+def encriptacion(texto, llave, largo_bloque):
+        #texto = largo_texto_ideal(texto)
+        #largo_bloque = largo_bloque_ideal(largo_bloque, texto)
+        largo_t = len(texto)
+        cantidad = int(largo_t/largo_bloque)
+        texto_encriptado = texto[0:largo_t]
+        i = 0
+        while i < largo_t:
+                j = 0
+                texto_aux = ""
+                while j <= cantidad*2:
+                        fragmento_1 = texto_encriptado[j*int(largo_bloque/2):(j+1)*int(largo_bloque/2)]
+                        fragmento_2 = texto_encriptado[(j+1)*int(largo_bloque/2):(j+2)*int(largo_bloque/2)]
+                        fragmento_1 = sustitucion(fragmento_1, llave)
+                        texto_aux = texto_aux + permutacion(fragmento_1, fragmento_2)
+                        j = j + 2
+                texto_encriptado = texto_aux[0:largo_t]
+                i = i + 1
+        return texto_encriptado
+
+def desencriptacion(texto_encriptado, llave, largo_bloque):
+        largo_t = len(texto_encriptado)
+        cantidad = int(largo_t/largo_bloque)
+        texto = texto_encriptado[0:largo_t]
+        i = 0
+        while i < largo_t:
+                j = 0
+                texto_aux = ""
+                while j <= cantidad*2:
+                        fragmento = texto[j*int(largo_bloque/2):(j+2)*int(largo_bloque/2)]
+                        fragmento = permutacion_inv(fragmento[0:int(len(fragmento)/2)], fragmento[int(len(fragmento)/2):len(fragmento)])
+                        fragmento_1 = fragmento[0:int(len(fragmento)/2)]
+                        fragmento_2 = fragmento[int(len(fragmento)/2):len(fragmento)]
+                        texto_aux = texto_aux + sustitucion_inv(fragmento_1, llave) + fragmento_2
+                        j = j + 2
+                texto = texto_aux[0:largo_t]
+                i = i + 1
+        if len(texto)%2 == 0 and texto[len(texto) - 1] == " ":
+                return texto[0:len(texto) - 1]
+        else:
+                return texto
 
 texto = "Laboratio 3 - Sistemas de Comunicación"
-texto_binario = texto_a_binario(texto)
-texto_binario_encriptado = cifrado_feistel(texto_binario,"01010001",16)
-texto_encriptado = binario_a_texto(texto_binario_encriptado)
+print(texto)
+llave = 3
+largo_bloque = int(48/8)
+texto = largo_texto_ideal(texto)
+largo_bloque = largo_bloque_ideal(largo_bloque, largo_bloque, texto, 0)
+texto_encriptado = encriptacion(texto,llave,largo_bloque)
 print(texto_encriptado)
-print(binario_a_texto(cifrado_feistel(texto_binario_encriptado,"01010001",16)))
+texto_desencriptado = desencriptacion(texto_encriptado,llave,largo_bloque)
+print(texto_desencriptado)
