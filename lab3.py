@@ -127,6 +127,12 @@ def permutacion_inv(fragmento_texto_1, fragmento_texto_2):
                 i = i + 2
         return fragmento_1 + fragmento_2
 
+# ENTRADA: String 'texto', dígito 'llave' y dígito 'largo_bloque'.
+# DESCRIPCIÓN: Encripta el 'texto'. Recorre el 'texto' cada 'largo_bloque' símbolos de este, diviéndose en 2 partes donde
+#              la primera corresponde al fragmento_1 y la segunda al fragmento_2. Al fragmento_1 se le aplica una sustitución con
+#              'llave'. Luego, se realiza la permutación entre el fragmento_1 sustituido y el fragmento_2 y el resultado es agregado
+#              a un 'texto_aux'. Este proceso se repite una cantidad de veces igual al largo del 'texto'.
+# SALIDA: Entrega el string 'texto_encriptado', correspondiente al último 'texto_aux' obtenido.
 def encriptacion(texto, llave, largo_bloque):
         largo_t = len(texto)
         cantidad = int(largo_t/largo_bloque)
@@ -145,6 +151,12 @@ def encriptacion(texto, llave, largo_bloque):
                 i = i + 1
         return texto_encriptado
 
+# ENTRADA: String 'texto_encriptado', dígito 'llave' y dígito 'largo_bloque'.
+# DESCRIPCIÓN: Desencripta el 'texto_encriptado'. Recorre el 'texto' cada 'largo_bloque' símbolos de este, aplicándole una permutación
+#              invertida entre su mitad izquierda y su mitad derecha. Luego, el fragmento permutado es dividido en 2 fragmentos del
+#              mismo largo, fragmento_1 y fragmento_2. Finalmente, al 'texto_aux' se le agrega la sustitución invertida del fragmento_1
+#              con 'llave' más el fragmento_2. Este proceso se repite una cantidad de veces igual al largo del 'texto_encriptado'.
+# SALIDA: Entrega el string 'texto', correspondiente al último 'texto_aux' obtenido.
 def desencriptacion(texto_encriptado, llave, largo_bloque):
         largo_t = len(texto_encriptado)
         cantidad = int(largo_t/largo_bloque)
@@ -167,13 +179,58 @@ def desencriptacion(texto_encriptado, llave, largo_bloque):
         else:
                 return texto
 
-texto = "Laboratio 3 - Sistemas de Comunicación"
-print(texto)
-llave = 3
-largo_bloque = int(48/8)
+def cadena_a_digito(cadena):
+        digito = 0
+        for numero in cadena:
+                digito = digito + int(numero)*pow(10,len(cadena) - cadena.index(numero) - 1)
+        return digito
+
+def corroborar_llave(llave_str):
+        if len(llave_str) == 0:
+                print("Vuelva a ingresar un dígito.")
+                llave_str = str(input("Ingrese llave numérica:"))
+                return corroborar_llave(llave_str)
+        elif any(llave_str.isdigit() for simbolo in llave_str) == False:
+                print("Debe de ingresar un dígito.")
+                llave_str = str(input("Ingrese llave numérica:"))
+                return corroborar_llave(llave_str)
+        else:
+                return cadena_a_digito(llave_str)
+               
+def corroborar_largo_bloque(largo_bloque_str):
+        if len(largo_bloque_str) == 0:
+                print("Vuelva a ingresar un dígito.")
+                largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16):"))
+                return corroborar_largo_bloque(largo_bloque_str)
+        elif any(largo_bloque_str.isdigit() for simbolo in largo_bloque_str) == False:
+                print("Debe de ingresar un dígito.")
+                largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16):"))
+                return corroborar_largo_bloque(largo_bloque_str)
+        elif cadena_a_digito(largo_bloque_str)%16 != 0:
+                print("El dígito no es múltiplo de 16.")
+                largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16):"))
+                return corroborar_largo_bloque(largo_bloque_str)
+        else:
+                return cadena_a_digito(largo_bloque_str)
+                
+
+        
+texto = str(input("Ingrese un texto o frase:"))
+while len(texto) == 0:
+        print("Debe ingresar un texto con un largo de al menos 1.")
+        texto = str(input("Ingrese un texto o frase:"))
 texto = largo_texto_ideal(texto)
+
+llave_str = str(input("Ingrese llave numérica:"))
+llave = corroborar_llave(llave_str)
+
+largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16):"))
+largo_bloque = int(corroborar_largo_bloque(largo_bloque_str)/16)
 largo_bloque = largo_bloque_ideal(largo_bloque, largo_bloque, texto, 0)
+
 texto_encriptado = encriptacion(texto,llave,largo_bloque)
 print(texto_encriptado)
 texto_desencriptado = desencriptacion(texto_encriptado,llave,largo_bloque)
+if len(texto_desencriptado)%2 == 0 and texto_desencriptado[len(texto_desencriptado) - 1] == " ":
+        texto_desencriptado = texto_desencriptado[0:len(texto_desencriptado) - 1]
 print(texto_desencriptado)
