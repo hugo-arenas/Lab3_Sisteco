@@ -1,53 +1,52 @@
 # -⁻- coding: UTF-8 -*-
+# LABORATORIO 3 - SISTEMAS DE COMUNICACIÓN
+# ESTUDIANTES: HUGO ARENAS
+#              VICTOR HUANQUI
+# DOCENTE: CARLOS GONZÁLEZ
+
+# Tras definir un string con todos los símbolos conocidos posibles en español, se define un arreglo vacio para guardar por separado
+# los símbolos del string 'simbolos'.
 simbolos = "0123456789abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ#$%&/\{}[]()-~_,.;:+*'= °|¬áéíóúüÁÉÍÓÚÜ´âêîôûÂÊÎÔÛ^àèìòùÀÈÌÒÙ`¿?¡!<>@"
 simbolos_dato = []
-simbolos_valor = []
-i = 0
+
+# Se guarda cada símbolo en el arreglo 'simbolos_dato'
 for s in simbolos:
         simbolos_dato.append(s)
-        simbolos_valor.append(ord(s))
-#while i < len(simbolos):
-#        simbolos_dato.append(simbolos[i])
-#        simbolos_valor.append(ord(simbolos[i]))
-#        i = i + 1
+
+# Se agrega el símbolo '"' en el arreglo 'simbolos_dato', dejando este arreglo como un dato global.     
 simbolos_dato.append('"')
-simbolos_valor.append(ord('"'))
 
-def digito_a_binario(digito):
-        binario = bin(digito)
-        binario = binario[2:len(binario)]
-        while len(binario) < 8:
-                binario = "0" + binario
-        return binario
-
-def dato_a_binario(dato):
-        binario = str(bin(ord(dato)))
-        if len(binario) == 10:
-                return binario[2:len(binario)]
-        else:
-                i = len(binario)-2
-                aux_binario = binario[2:len(binario)]
-                while i < 8:
-                        aux_binario = "0" + aux_binario
-                        i = i + 1
-                return aux_binario
-  
-def texto_a_binario(texto):
-        texto_binario = ""
-        for simbolo in texto:
-                texto_binario = texto_binario + dato_a_binario(simbolo)
-        return texto_binario
-
+# ENTRADA: String 'texto'.
+# DESCRIPCIÓN: Agrega un espacio al final del string 'texto' si este posee un largo impar.
+# SALIDA: Entrega el string 'texto' tanto si se le agrego el espacio al final como no.
 def largo_texto_ideal(texto):
         if len(texto)%2 != 0:
                 return texto + " "
         else:
                 return texto
+
+# ENTRADA: Dígito 'largo_bloque', dígito 'l_bloque', string 'texto' y dígito 'direccion'.
+# DESCRIPCIÓN: Busca un 'largo_bloque' ajustado para el 'texto'. Inicialmente, 'largo_bloque' es igual a 'l_bloque' y
+#              y 'direccion' es igual a 0. Si 'largo_bloque' es mayor a largo de 'texto' y 'direccion' es distinto
+#              de 0, entonces retorna 0. Si 'largo_bloque' es impar, entonces se hace recursión aumentando
+#              'largo_bloque' y 'l_bloque' en 1. Si 'largo_bloque' es 0, entonces retorna 0. Si el módulo entre el
+#              largo de 'texto' y 'largo_bloque' es 0, entonces se retorna 'largo_bloque' pues ya es el ideal. Sino,
+#              entonces puede suceder 3 cosas:
+#              (1) Si 'direccion' es 0, entonces se crean 2 variables: b1=largo_bloque_ideal(largo_bloque-2,l_bloque,texto,-1)
+#                  y b2=largo_bloque_ideal(largo_bloque+2,l_bloque,texto,1). Obteniendo sus resultados, si uno de ellos es 0
+#                  y el otro no, entonces se retorna aquella variable que no de 0. Sino, si b1 y b2 son 0, entonces se retorna
+#                  0. Sino, si 'l_bloque' menos b1 es menor a b2 menos 'l_bloque', entonces se retorna b1. Si no se cumple este
+#                  último, entonces se retorna b2.
+#              (2) Sino, si 'direccion' es mayor a 0 (o solo valor 1), entonces retorna la recursión de la función, aumentando
+#                  en 2 el 'largo_bloque' y dejando 'direccion' como 1.
+#              (3) Sino, si 'direccion' es menor a 0 (o solo valor -1), entonces retorna la recursión de la función, disminuyendo
+#                  en 2 el 'largo_bloque' y dejando 'direccion' como -1.
+# SALIDA: Entrega el 'largo_bloque' ideal.
 def largo_bloque_ideal(largo_bloque, l_bloque, texto, direccion):
-        if len(texto) < largo_bloque:
+        if len(texto) < largo_bloque and direccion != 0:
                 return 0
         elif largo_bloque%2 == 1:
-                return largo_bloque_ideal(largo_bloque + 1, l_bloque, texto, direccion)
+                return largo_bloque_ideal(largo_bloque + 1, l_bloque + 1, texto, direccion)
         elif largo_bloque == 0:
                 return 0
         elif len(texto)%largo_bloque == 0:
@@ -70,25 +69,40 @@ def largo_bloque_ideal(largo_bloque, l_bloque, texto, direccion):
                         return largo_bloque_ideal(largo_bloque + 2, l_bloque, texto, 1)
                 else:
                         return largo_bloque_ideal(largo_bloque - 2, l_bloque, texto, -1)
-        
+
+# ENTRADA: String 'fragmento_texto' y dígito 'llave'.
+# DESCRIPCIÓN: Crear un string 'fragmento_nuevo', agregando a el cada símbolo reemplazado del 'fragmento_texto' hacia 'llave'
+#              posiciones a la derecha, considerando en todo momento que se hace módulo respecto al largo de 'simbolos_dato'.
+# SALIDA: Entrega el string 'fragmento_nuevo'.       
 def sustitucion(fragmento_texto, llave):
         fragmento_nuevo = ""
         for simbolo in fragmento_texto:
-                posicion = simbolos_valor.index(ord(simbolo))
-                posicion = (posicion + llave)%len(simbolos)
+                posicion = simbolos_dato.index(simbolo)
+                posicion = (posicion + llave)%len(simbolos_dato)
                 fragmento_nuevo = fragmento_nuevo + simbolos_dato[posicion]
         return fragmento_nuevo
 
+# ENTRADA: String 'fragmento_texto' y dígito 'llave'.
+# DESCRIPCIÓN: Crear un string 'fragmento_nuevo'. Recorre cada símbolo de 'fragmento_texto' y busca su posición dentro de
+#              'simbolos_dato'. Luego, realiza un ciclo buscando un índice que al ser sumado con la 'llave' y modulado por
+#              el largo de 'simbolos_dato', de como resultado la posición del símbolo en 'simbolos_dato'. Un vez obtenido el
+#              índice, a 'fragmento_nuevo' se le agrega el símbolo ubicado en la posición 'indice' dentro de 'simbolos_dato'.
+# SALIDA: Entrega el string 'fragmento_nuevo'.
 def sustitucion_inv(fragmento_texto, llave):
         fragmento_nuevo = ""
         for simbolo in fragmento_texto:
-                posicion = simbolos_valor.index(ord(simbolo))
+                posicion = simbolos_dato.index(simbolo)
                 indice = 0
-                while (indice + llave)%len(simbolos) != posicion:
+                while (indice + llave)%len(simbolos_dato) != posicion:
                         indice = indice + 1
                 fragmento_nuevo = fragmento_nuevo + simbolos_dato[indice]
         return  fragmento_nuevo
 
+# ENTRADA: String 'fragmento_texto_1' y string 'fragmento_texto_2'.
+# DESCRIPCIÓN: Crear un string 'fragmento_nuevo' vacío. Se le va agregando simultáneamente cada símbolo de 'fragmento_texto_1'
+#              y 'fragmento_texto_2', el primero desde la posición inicial hasta la final y el segundo desde la posición final
+#              hacia la inicial.
+# SALIDA: Entrega el string 'fragmento_nuevo'.
 def permutacion(fragmento_texto_1, fragmento_texto_2):
         fragmento_nuevo = ""
         i = 0
@@ -97,6 +111,11 @@ def permutacion(fragmento_texto_1, fragmento_texto_2):
                 i = i + 1
         return fragmento_nuevo
 
+# ENTRADA: String 'fragmento_texto_1' y string 'fragmento_texto_2'.
+# DESCRIPCIÓN: Crear un string 'fragmento_nuevo' vacío. Se le va agregando simultáneamente cada símbolo de 'fragmento_texto_1'
+#              y 'fragmento_texto_2', el primero desde la posición inicial hacia 2 saltos de posición a la derecha y el segundo
+#              desde la posición final hacia 2 saltos de posición a la izquierda.
+# SALIDA: Entrega el string 'fragmento_nuevo'.
 def permutacion_inv(fragmento_texto_1, fragmento_texto_2):
         fragmento_aux = fragmento_texto_1 + fragmento_texto_2
         fragmento_1 = ""
@@ -109,8 +128,6 @@ def permutacion_inv(fragmento_texto_1, fragmento_texto_2):
         return fragmento_1 + fragmento_2
 
 def encriptacion(texto, llave, largo_bloque):
-        #texto = largo_texto_ideal(texto)
-        #largo_bloque = largo_bloque_ideal(largo_bloque, texto)
         largo_t = len(texto)
         cantidad = int(largo_t/largo_bloque)
         texto_encriptado = texto[0:largo_t]
