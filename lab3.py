@@ -179,12 +179,19 @@ def desencriptacion(texto_encriptado, llave, largo_bloque):
         else:
                 return texto
 
+# ENTRADA: String 'cadena'.
+# DESCRIPCIÓN: Transforma una cadena que contiene solo números en el digito respecto.
+# SALIDA: Entrega el dígito respectivo de 'cadena'.
 def cadena_a_digito(cadena):
         digito = 0
         for numero in cadena:
                 digito = digito + int(numero)*pow(10,len(cadena) - cadena.index(numero) - 1)
         return digito
 
+# ENTRADA: String 'llave_str'.
+# DESCRIPCIÓN: Verifica que 'llave_str' cumpla las condiciones correctas. Si el largo de 'llave_str' es 0 o si algún símbolo no es
+#              dígito, entonces se vuelve a ingresar por pantalla y se realiza la recursión con el nuevo 'llave_str'.
+# SALIDA: Entrega 'llave_str' correcta transformada en un dígito.
 def corroborar_llave(llave_str):
         if len(llave_str) == 0:
                 print("Vuelva a ingresar un dígito.")
@@ -196,7 +203,12 @@ def corroborar_llave(llave_str):
                 return corroborar_llave(llave_str)
         else:
                 return cadena_a_digito(llave_str)
-               
+
+# ENTRADA: String 'largo_bloque_str'.
+# DESCRIPCIÓN: Verifica que 'largo_bloque_str' cumpla las condiciones correctas. Si el largo de 'largo_bloque_str' es 0 o si algún
+#              símbolo no es dígito o si no es múltiplo de 16, entonces se vuelve a ingresar por pantalla y se realiza la recursión
+#              con el nuevo 'largo_bloque_str'.
+# SALIDA: Entrega 'largo_bloque_str' correcta transformada en un dígito.              
 def corroborar_largo_bloque(largo_bloque_str):
         if len(largo_bloque_str) == 0:
                 print("Vuelva a ingresar un dígito.")
@@ -214,22 +226,28 @@ def corroborar_largo_bloque(largo_bloque_str):
                 return cadena_a_digito(largo_bloque_str)
                 
 
-        
+# Se ingresa por pantalla el texto plano para encriptar, corroborando que sea una entrada correcta y viendo si tiene un largo ideal.        
 texto = str(input("Ingrese un texto o frase:"))
 while len(texto) == 0:
         print("Debe ingresar un texto con un largo de al menos 1.")
         texto = str(input("Ingrese un texto o frase:"))
 texto = largo_texto_ideal(texto)
 
+# Se ingresa por pantalla la llave numérica de encriptación, corroborando que sea una entrada correcta. 
 llave_str = str(input("Ingrese llave numérica:"))
 llave = corroborar_llave(llave_str)
 
+# Se ingresa por pantalla el largo de bloque, corroborando que sea una entrada correcta y viendo si tiene un largo ideal.
 largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16):"))
 largo_bloque = int(corroborar_largo_bloque(largo_bloque_str)/16)
 largo_bloque = largo_bloque_ideal(largo_bloque, largo_bloque, texto, 0)
 
+# El 'texto' es encriptado, en base a un encriptador inspirado en el cifrado Feistel. Luego se imprime el texto cifrado.
 texto_encriptado = encriptacion(texto,llave,largo_bloque)
 print(texto_encriptado)
+
+# El 'texto_encriptado' es desencriptado, en base a un desencriptador inspirado en el decifrado Feistel, lo vuelve a su largo original
+# si es necesario y luego lo imprime.
 texto_desencriptado = desencriptacion(texto_encriptado,llave,largo_bloque)
 if len(texto_desencriptado)%2 == 0 and texto_desencriptado[len(texto_desencriptado) - 1] == " ":
         texto_desencriptado = texto_desencriptado[0:len(texto_desencriptado) - 1]
