@@ -241,7 +241,7 @@ llave = corroborar_llave(llave_str)
 
 # Se ingresa por pantalla el largo de bloque, corroborando que sea una entrada correcta y viendo si tiene un largo ideal.
 largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16):"))
-largo_bloque = int(corroborar_largo_bloque(largo_bloque_str)/16)
+largo_bloque = int(corroborar_largo_bloque(largo_bloque_str)/8)
 largo_bloque = largo_bloque_ideal(largo_bloque, largo_bloque, texto, 0)
 
 # El 'texto' es encriptado, en base a un encriptador inspirado en el cifrado Feistel. Luego se imprime el texto cifrado.
