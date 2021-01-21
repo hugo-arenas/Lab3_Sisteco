@@ -4,6 +4,8 @@
 #              VICTOR HUANQUI
 # DOCENTE: CARLOS GONZÁLEZ
 
+from time import time
+
 # Tras definir un string con todos los símbolos conocidos posibles en español, se define un arreglo vacio para guardar por separado
 # los símbolos del string 'simbolos'.
 simbolos = "0123456789abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ#$%&/\{}[]()-~_,.;:+*'= °|¬áéíóúüÁÉÍÓÚÜ´âêîôûÂÊÎÔÛ^àèìòùÀÈÌÒÙ`¿?¡!<>@"
@@ -243,12 +245,22 @@ largo_bloque = int(corroborar_largo_bloque(largo_bloque_str)/16)
 largo_bloque = largo_bloque_ideal(largo_bloque, largo_bloque, texto, 0)
 
 # El 'texto' es encriptado, en base a un encriptador inspirado en el cifrado Feistel. Luego se imprime el texto cifrado.
+te_i = time()
 texto_encriptado = encriptacion(texto,llave,largo_bloque)
+te_f = time()
+te = te_f - te_i
+throughput_e = largo_bloque/te
 print(texto_encriptado)
+print("Rendimiento de encriptación: " + str(throughput_e))
 
 # El 'texto_encriptado' es desencriptado, en base a un desencriptador inspirado en el decifrado Feistel, lo vuelve a su largo original
 # si es necesario y luego lo imprime.
+td_i = time()
 texto_desencriptado = desencriptacion(texto_encriptado,llave,largo_bloque)
 if len(texto_desencriptado)%2 == 0 and texto_desencriptado[len(texto_desencriptado) - 1] == " ":
         texto_desencriptado = texto_desencriptado[0:len(texto_desencriptado) - 1]
+td_f = time()
+td = td_f - td_i
+throughput_d = largo_bloque/td
 print(texto_desencriptado)
+print("Rendimiento de desencriptación: " + str(throughput_d))
