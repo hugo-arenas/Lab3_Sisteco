@@ -229,6 +229,7 @@ def corroborar_largo_bloque(largo_bloque_str):
                 
 
 # Se ingresa por pantalla el texto plano para encriptar, corroborando que sea una entrada correcta y viendo si tiene un largo ideal.        
+print("\n-------  Programa de encriptación de texto  -------")
 texto = str(input("Ingrese un texto o frase: "))
 while len(texto) == 0:
         print("Debe ingresar un texto con un largo de al menos 1.")
@@ -240,27 +241,31 @@ llave_str = str(input("Ingrese llave numérica: "))
 llave = corroborar_llave(llave_str)
 
 # Se ingresa por pantalla el largo de bloque, corroborando que sea una entrada correcta y viendo si tiene un largo ideal.
-largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16):"))
+largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16): "))
 largo_bloque = int(corroborar_largo_bloque(largo_bloque_str)/8)
 largo_bloque = largo_bloque_ideal(largo_bloque, largo_bloque, texto, 0)
 
+# Accion a realizar
+accion = int(input("Ingrese su acción\n(0) Encriptar\n(1) Desencriptar\nRespuesta: "))
+
 # El 'texto' es encriptado, en base a un encriptador inspirado en el cifrado Feistel. Luego se imprime el texto cifrado.
 te_i = time()
-texto_encriptado = encriptacion(texto,llave,largo_bloque)
-te_f = time()
-te = te_f - te_i
-throughput_e = largo_bloque/te
-print(texto_encriptado)
-print("Rendimiento de encriptación: " + str(throughput_e))
+if accion == 0:
+        texto_encriptado = encriptacion(texto,llave,largo_bloque)
+        te_f = time() - te_i
+        throughput_e = largo_bloque/float(te_f)        
+        print("\nEncriptando...\nMensaje: " + texto_encriptado)
+        print("\nRendimiento: " + str(throughput_e))
 
 # El 'texto_encriptado' es desencriptado, en base a un desencriptador inspirado en el decifrado Feistel, lo vuelve a su largo original
 # si es necesario y luego lo imprime.
-td_i = time()
-texto_desencriptado = desencriptacion(texto_encriptado,llave,largo_bloque)
-if len(texto_desencriptado)%2 == 0 and texto_desencriptado[len(texto_desencriptado) - 1] == " ":
-        texto_desencriptado = texto_desencriptado[0:len(texto_desencriptado) - 1]
-td_f = time()
-td = td_f - td_i
-throughput_d = largo_bloque/td
-print(texto_desencriptado)
-print("Rendimiento de desencriptación: " + str(throughput_d))
+if accion == 1:
+        texto_desencriptado = desencriptacion(texto,llave,largo_bloque)
+        if len(texto_desencriptado)%2 == 0 and texto_desencriptado[len(texto_desencriptado) - 1] == " ":
+                texto_desencriptado = texto_desencriptado[0:len(texto_desencriptado) - 1]
+        te_f = time() - te_i
+        throughput_d = largo_bloque/float(te_f)
+        print("\nDesencriptando...\nMensaje: " + texto_desencriptado)
+        print("\nRendimiento: " + str(throughput_d))
+
+print("\n-------  Fin Programa de encriptación de texto  -------\n")
