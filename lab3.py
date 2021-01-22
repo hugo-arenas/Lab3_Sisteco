@@ -197,11 +197,11 @@ def cadena_a_digito(cadena):
 def corroborar_llave(llave_str):
         if len(llave_str) == 0:
                 print("Vuelva a ingresar un dígito.")
-                llave_str = str(input("Ingrese llave numérica:"))
+                llave_str = str(input("Ingrese llave numérica: "))
                 return corroborar_llave(llave_str)
         elif any(llave_str.isdigit() for simbolo in llave_str) == False:
                 print("Debe de ingresar un dígito.")
-                llave_str = str(input("Ingrese llave numérica:"))
+                llave_str = str(input("Ingrese llave numérica: "))
                 return corroborar_llave(llave_str)
         else:
                 return cadena_a_digito(llave_str)
@@ -214,29 +214,29 @@ def corroborar_llave(llave_str):
 def corroborar_largo_bloque(largo_bloque_str):
         if len(largo_bloque_str) == 0:
                 print("Vuelva a ingresar un dígito.")
-                largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16):"))
+                largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16): "))
                 return corroborar_largo_bloque(largo_bloque_str)
         elif any(largo_bloque_str.isdigit() for simbolo in largo_bloque_str) == False:
                 print("Debe de ingresar un dígito.")
-                largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16):"))
+                largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16): "))
                 return corroborar_largo_bloque(largo_bloque_str)
         elif cadena_a_digito(largo_bloque_str)%16 != 0:
                 print("El dígito no es múltiplo de 16.")
-                largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16):"))
+                largo_bloque_str = str(input("Ingrese tamaño de bloque en bits(múltiplo de 16): "))
                 return corroborar_largo_bloque(largo_bloque_str)
         else:
                 return cadena_a_digito(largo_bloque_str)
                 
 
 # Se ingresa por pantalla el texto plano para encriptar, corroborando que sea una entrada correcta y viendo si tiene un largo ideal.        
-texto = str(input("Ingrese un texto o frase:"))
+texto = str(input("Ingrese un texto o frase: "))
 while len(texto) == 0:
         print("Debe ingresar un texto con un largo de al menos 1.")
-        texto = str(input("Ingrese un texto o frase:"))
+        texto = str(input("Ingrese un texto o frase: "))
 texto = largo_texto_ideal(texto)
 
 # Se ingresa por pantalla la llave numérica de encriptación, corroborando que sea una entrada correcta. 
-llave_str = str(input("Ingrese llave numérica:"))
+llave_str = str(input("Ingrese llave numérica: "))
 llave = corroborar_llave(llave_str)
 
 # Se ingresa por pantalla el largo de bloque, corroborando que sea una entrada correcta y viendo si tiene un largo ideal.
